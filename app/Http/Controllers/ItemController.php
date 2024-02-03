@@ -32,6 +32,24 @@ class ItemController extends Controller
     {
 
 
-        return  view('inventory.show', ["item" => Item::find($id)]);
+        return  view('inventory.show', ["item" => Item::findOrFail($id)]);
+    }
+    public function edit($id)
+    {
+        return  view('inventory.edit', ["item" => Item::findOrFail($id)]);
+    }
+    public function update($id,Request $request){
+        $item=Item::findOrFail($id);
+        $item->name = $request->name;
+        $item->price = $request->price;
+        $item->stock = $request->stock;
+        $item->update();
+        return redirect()->route('item.index');
+    }
+    public function destroy($id)
+    {
+        $item = Item::findOrFail($id);
+        $item->delete();
+        return redirect()->back();
     }
 }
