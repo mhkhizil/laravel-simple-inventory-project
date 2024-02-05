@@ -20,6 +20,11 @@ class ItemController extends Controller
     }
     public function store(Request $request)
     {
+        $request->validate([
+            'name'=>'required',
+            'price'=>'required',
+            'stock'=>'required',
+        ]);
         $item = new Item();
         $item->name = $request->name;
         $item->price = $request->price;
