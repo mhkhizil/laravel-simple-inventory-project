@@ -43,7 +43,7 @@ Item list
         @endforelse
     </tbody>
 </table>
-
+{{$items->onEachSide(1)->links()}}
  @endsection
 
 

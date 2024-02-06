@@ -15,7 +15,7 @@ class ItemController extends Controller
     {
         //d mhr ll $items= new Item() so p instatnce sout p mha $items->all() so p use lo ll ya dl
         return view('inventory.index', [
-            'items' => Item::all()
+            'items' => Item::paginate(7)
         ]);
     }
     public function store(Request $request)
