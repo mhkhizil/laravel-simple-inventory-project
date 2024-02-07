@@ -9,7 +9,7 @@
         @csrf
         <div class=" mb-3">
             <label for="" class=" form-label">Item name</label>
-            <input value="{{ $item->name }}" type="text" class=" form-control @error('name') is-invalid @enderror"
+            <input value="{{ old("name",$item->name)  }}" type="text" class=" form-control @error('name') is-invalid @enderror"
                 name="name">
             @error('name')
                 <div class=" invalid-feedback">{{ $message }}</div>
@@ -17,7 +17,7 @@
         </div>
         <div class=" mb-3">
             <label for="" class=" form-label">Item price</label>
-            <input value="{{ $item->price }}" type="number" class=" form-control @error('price') is-invalid @enderror"
+            <input value="{{ old("price",$item->price)  }}" type="number" class=" form-control @error('price') is-invalid @enderror"
                 name="price">
             @error('price')
                 <div class=" invalid-feedback">{{ $message }}</div>
@@ -25,7 +25,7 @@
         </div>
         <div class=" mb-3">
             <label for="" class=" form-label">Item stock</label>
-            <input value="{{ $item->stock }}" type="number" class=" form-control @error('stock') is-invalid @enderror"
+            <input value="{{ old("stock",$item->stock ) }}" type="number" class=" form-control @error('stock') is-invalid @enderror"
                 name="stock">
             @error('stock')
                 <div class=" invalid-feedback">{{ $message }}</div>
