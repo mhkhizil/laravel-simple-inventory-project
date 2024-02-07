@@ -8,11 +8,17 @@
         @csrf
         <div class=" mb-3">
             <label for="" class=" form-label">Category title</label>
-            <input type="text" class=" form-control" name="title">
+            <input type="text" class=" form-control  @error('title') is-invalid @enderror" name="title">
+            @error('title')
+                <div class=" invalid-feedback">{{ $message }}</div>
+            @enderror
         </div>
         <div class=" mb-3">
             <label for="" class=" form-label">Category description</label>
-            <textarea rows="10" class=" form-control" name="description"></textarea>
+            <textarea rows="10" class=" form-control  @error('description') is-invalid @enderror" name="description"></textarea>
+            @error('description')
+                <div class=" invalid-feedback">{{ $message }}</div>
+            @enderror
         </div>
 
 

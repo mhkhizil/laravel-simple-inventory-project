@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class CategoryController extends Controller
 {
@@ -12,7 +13,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        return view('category.index',["categories"=>Category::all()]);
+        return view('category.index', ["categories" => Category::all()]);
     }
 
     /**
@@ -20,7 +21,7 @@ class CategoryController extends Controller
      */
     public function create()
     {
-         return view('category.create');
+        return view('category.create');
     }
 
     /**
@@ -28,9 +29,16 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        $category=new Category();
-        $category->title=$request->title;
-        $category->description=$request->description;
+        $validators = Validator::make($request->all(),[
+            "title" => "required",
+            'description' => "required"
+        ]);
+        if ($validators->fails()) {
+            return  redirect()->back()->withErrors($validators);
+        }
+        $category = new Category();
+        $category->title = $request->title;
+        $category->description = $request->description;
         $category->save();
         return  redirect()->route('category.index');
     }
@@ -40,7 +48,7 @@ class CategoryController extends Controller
      */
     public function show(string $id)
     {
-        return view('category.show',['category'=>Category::findOrFail($id)]);
+        return view('category.show', ['category' => Category::findOrFail($id)]);
     }
 
     /**
@@ -48,7 +56,7 @@ class CategoryController extends Controller
      */
     public function edit(string $id)
     {
-        return view('category.edit',['category'=>Category::findOrFail($id)]);
+        return view('category.edit', ['category' => Category::findOrFail($id)]);
     }
 
     /**
@@ -56,9 +64,9 @@ class CategoryController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $category=Category::findOrFail($id);
-        $category->title=$request->title;
-        $category->description=$request->description;
+        $category = Category::findOrFail($id);
+        $category->title = $request->title;
+        $category->description = $request->description;
         $category->update();
         return redirect()->route('category.index');
     }
@@ -68,7 +76,7 @@ class CategoryController extends Controller
      */
     public function destroy(string $id)
     {
-        $category=Category::findOrFail($id);
+        $category = Category::findOrFail($id);
         $category->delete();
         return redirect()->back();
     }

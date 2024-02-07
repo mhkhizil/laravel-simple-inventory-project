@@ -4,6 +4,11 @@
 @endsection
 @section('content')
     <h1>Item list </h1>
+    @if (session("status"))
+<div class=" alert alert-success">
+    {{session('status')}}
+</div>
+    @endif
     <table class=" table table-borderless">
         <thead>
             <tr>
