@@ -44,6 +44,11 @@ class ItemController extends Controller
         return  view('inventory.edit', ["item" => Item::findOrFail($id)]);
     }
     public function update($id,Request $request){
+        $request->validate([
+            'name'=>"required|min:3|max:50|unique:items,name,$id",
+            'price'=>'required|numeric|gte:50',
+            'stock'=>'required|numeric|gt:0',
+        ]);
         $item=Item::findOrFail($id);
         $item->name = $request->name;
         $item->price = $request->price;
