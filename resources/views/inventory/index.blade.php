@@ -4,6 +4,9 @@
 @endsection
 @section('content')
     <h1>Item list </h1>
+    @if (request()->has('keyword'))
+        Search result by "<span class="  fw-bold  fst-italic">{{ request()->keyword }}</span>"
+    @endif
     @if (session('status'))
         <div class=" alert alert-success">
             {{ session('status') }}
@@ -16,7 +19,13 @@
         <div class="  col-md-5">
             <form action="{{ route('item.index') }}" method="GET">
                 <div class=" input-group ">
-                    <input type="text" class=" form-control" name="keyword">
+                    <input type="text" class=" form-control" name="keyword"
+                        @if (request()->has('keyword')) {
+                        value="{{ request()->keyword }}"
+                    } @endif>
+                    @if (request()->has('keyword'))
+                        <a href="{{ route('item.index') }}" class=" btn btn-danger">Clear</a>
+                    @endif
                     <button class=" btn btn-primary">Search</button>
                 </div>
             </form>
@@ -26,7 +35,11 @@
         <thead>
             <tr>
                 <td>#</td>
-                <td>Name</td>
+                <td>Name
+                    <a class=" btn btn-outline-primary" href="{{ route('item.index',['name'=>'asc']) }}">ASC</a>
+                    <a class=" btn btn-outline-primary" href="{{ route('item.index',['name'=>'desc']) }}">DESC</a>
+                    <a class=" btn btn-outline-primary" href="{{ route('item.index') }}">Clear</a>
+                </td>
                 <td>Price</td>
                 <td>Stock</td>
                 <td>Control</td>
