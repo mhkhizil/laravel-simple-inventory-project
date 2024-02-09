@@ -18,8 +18,10 @@ class ItemController extends Controller
         $items=Item::when(request()->has('keyword'),function($query){
             $keyword=request()->keyword;
             $query->where("name","like","%".$keyword."%");
+            $query->orWhere("price","like","%".$keyword."%");
+            $query->orWhere("stock","like","%".$keyword."%");
         })->paginate(7);
-      
+
         return view('inventory.index',compact('items'));
     }
     public function store(Request $request)
