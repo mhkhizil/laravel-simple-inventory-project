@@ -13,10 +13,14 @@ class ItemController extends Controller
     }
     public function index()
     {
+
         //d mhr ll $items= new Item() so p instatnce sout p mha $items->all() so p use lo ll ya dl
-        return view('inventory.index', [
-            'items' => Item::paginate(7)
-        ]);
+        $items=Item::when(request()->has('keyword'),function($query){
+            $keyword=request()->keyword;
+            $query->where("name","like","%".$keyword."%");
+        })->paginate(7);
+      
+        return view('inventory.index',compact('items'));
     }
     public function store(Request $request)
     {
