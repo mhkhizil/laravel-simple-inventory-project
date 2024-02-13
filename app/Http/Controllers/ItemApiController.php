@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Item;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class ItemApiController extends Controller
 {
@@ -29,7 +30,25 @@ class ItemApiController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // $request->validate([
+        //     'name'=>'required|min:3|max:50|unique:items,name',
+        //     'price'=>'required|numeric|gte:50',
+        //     'stock'=>'required|numeric|gt:0',
+        // ]);
+        $validator= Validator::make($request->all(),[
+              'name'=>'required|min:3|max:50|unique:items,name',
+                 'price'=>'required|numeric|gte:50',
+                 'stock'=>'required|numeric|gt:0',
+            ]);
+            if ($validator->fails()) {
+              return response()->json($validator->messages(),422);
+            }
+        $item = new Item();
+        $item->name = $request->name;
+        $item->price = $request->price;
+        $item->stock = $request->stock;
+        $item->save();
+        return response()->json($item);
     }
 
     /**
@@ -37,7 +56,11 @@ class ItemApiController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $item=Item::find($id);
+        if (is_null($item)) {
+            return response()->json(["message"=>"Not found"],404);
+        }
+        return response()->json($item);
     }
 
     /**
@@ -45,7 +68,24 @@ class ItemApiController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $validator= Validator::make($request->all(),[
+            'name'=>'required|min:3|max:50|unique:items,name',
+               'price'=>'required|numeric|gte:50',
+               'stock'=>'required|numeric|gt:0',
+          ]);
+          if ($validator->fails()) {
+            return response()->json($validator->messages(),422);
+          }
+          $item=Item::find($id);
+          if (is_null($item)) {
+            return response()->json(["message"=>"Not found"],404);
+        }
+   
+      $item->name = $request->name;
+      $item->price = $request->price;
+      $item->stock = $request->stock;
+      $item->update();
+      return response()->json($item);
     }
 
     /**
@@ -53,6 +93,11 @@ class ItemApiController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $item=Item::find($id);
+        if (is_null($item)) {
+            return response()->json(["message"=>"Not found"],404);
+        }
+        $item->delete();
+        return response()->json(["message"=>"Content deleted successfully!"],204);
     }
 }
