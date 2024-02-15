@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ItemResource;
 use App\Models\Item;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -22,7 +23,8 @@ class ItemApiController extends Controller
             $sortType=request()->name ??"asc";
             $query->orderBy("name",$sortType);
         })->paginate(7)->withQueryString();
-        return response()->json($items);
+        // return response()->json($items);
+        return ItemResource::collection($items);
     }
 
     /**
@@ -49,6 +51,7 @@ class ItemApiController extends Controller
         $item->stock = $request->stock;
         $item->save();
         return response()->json($item);
+
     }
 
     /**
@@ -60,7 +63,8 @@ class ItemApiController extends Controller
         if (is_null($item)) {
             return response()->json(["message"=>"Not found"],404);
         }
-        return response()->json($item);
+        // return response()->json($item);
+        return new ItemResource($item);
     }
 
     /**
@@ -80,12 +84,13 @@ class ItemApiController extends Controller
           if (is_null($item)) {
             return response()->json(["message"=>"Not found"],404);
         }
-   
+
       $item->name = $request->name;
       $item->price = $request->price;
       $item->stock = $request->stock;
       $item->update();
-      return response()->json($item);
+       return response()->json($item);
+
     }
 
     /**
