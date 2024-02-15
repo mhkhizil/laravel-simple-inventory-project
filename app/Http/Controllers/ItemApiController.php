@@ -50,7 +50,7 @@ class ItemApiController extends Controller
         $item->price = $request->price;
         $item->stock = $request->stock;
         $item->save();
-        return response()->json($item);
+        return new ItemResource($item);
 
     }
 
@@ -89,7 +89,7 @@ class ItemApiController extends Controller
       $item->price = $request->price;
       $item->stock = $request->stock;
       $item->update();
-       return response()->json($item);
+       return new ItemResource($item);
 
     }
 
