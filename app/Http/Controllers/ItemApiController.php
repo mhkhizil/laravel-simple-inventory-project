@@ -14,6 +14,7 @@ class ItemApiController extends Controller
      */
     public function index()
     {
+
         $items=Item::when(request()->has('keyword'),function($query){
             $keyword=request()->keyword;
             $query->where("name","like","%".$keyword."%");
