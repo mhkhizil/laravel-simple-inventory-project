@@ -19,4 +19,4 @@ use Illuminate\Support\Facades\Route;
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return $request->user();
 // });
-Route::apiResource("item",ItemApiController::class)->middleware(CheckApiToken::class);
+Route::apiResource("item",ItemApiController::class);
