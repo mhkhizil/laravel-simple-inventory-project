@@ -2,30 +2,49 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Student;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    public function register()  {
+    public function register()
+    {
         return view('auth.register');
     }
-    public function store(Request $request)  {
+    public function store(Request $request)
+    {
         $request->validate([
-            'name'=> "required|min:4",
-            'email'=> " required|email|unique:students,email",
-            'password'=> "required|min:8",
-            'password_confirmation'=> " same:password"
+            'name' => "required|min:4",
+            'email' => " required|email|unique:students,email",
+            'password' => "required|min:8",
+            'password_confirmation' => " same:password"
         ]);
-        return $request;
+        $student = new Student();
+        $student->name = $request->name;
+        $student->email = $request->email;
+        $student->password = Hash::make($request->password);
+        $student->save();
+
+        return redirect()->route('auth.login')->with("message", "Register successful!");
     }
-    public function login()  {
+    public function login()
+    {
 
         return view('auth.login');
     }
-    public function check()  {
+    public function check(Request $request)
+    {
+        $request->validate([
 
+            'email' => " required|email",
+            'password' => "required|min:8",
+
+        ]);
+        $student=Student::where('email',$request->email)->first();
+        return $student;
     }
-    public function logout()  {
-
+    public function logout()
+    {
     }
 }
