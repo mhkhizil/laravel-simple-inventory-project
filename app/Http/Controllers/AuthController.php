@@ -37,14 +37,22 @@ class AuthController extends Controller
     {
         $request->validate([
 
-            'email' => " required|email",
+            'email' => " required|email|exists:students,email",
             'password' => "required|min:8",
 
+        ],[
+            'email.exists'=>"Invalid Credentials"
         ]);
         $student=Student::where('email',$request->email)->first();
-        return $student;
+        if (!Hash::check($request->password,$student->password)) {
+            return redirect()->route('auth.login')->withErrors(["email"=>"Invalid credentials"]);
+        }
+        session(["auth"=>$student]);
+        return redirect()->route('dashboard.home');
     }
     public function logout()
     {
+        session()->forget("auth");
+        return redirect()->route("auth.login");
     }
 }

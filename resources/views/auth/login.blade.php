@@ -11,12 +11,6 @@
 
 
     @endif
-    @extends('layouts.master')
-@section('title')
-    register page
-@endsection
-@section('content')
-    <h1>Student register </h1>
     <form action="{{ route('auth.check') }}" method="POST">
         @csrf
 
@@ -39,7 +33,5 @@
 
         <button class=" btn btn-primary">  Log in</button>
     </form>
-@endsection
+    @endsection
 
-
-@endsection

@@ -3,6 +3,9 @@
     Dashboard home page
 @endsection
 @section('content')
+<div class=" alert alert-info">
+   Hello! {{session("auth")->name}}
+</div>
     <h1>I am  Dashboard home </h1>
     <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.
         Aspernatur ratione amet beatae doloribus? Expedita molestiae
@@ -24,4 +27,8 @@
         Aliquid dolore veritatis harum laboriosam mollitia totam consequatur
         corporis incidunt explicabo doloribus vitae non, inventore dolor architecto
         provident!</p>
+        <form action="{{route("auth.logout")}}" method="post">
+@csrf
+<button class=" btn btn-danger">Log out </button>
+        </form>
 @endsection
