@@ -40,18 +40,38 @@ class AuthController extends Controller
             'email' => " required|email|exists:students,email",
             'password' => "required|min:8",
 
-        ],[
-            'email.exists'=>"Invalid Credentials"
+        ], [
+            'email.exists' => "Invalid Credentials"
         ]);
-        $student=Student::where('email',$request->email)->first();
-        if (!Hash::check($request->password,$student->password)) {
-            return redirect()->route('auth.login')->withErrors(["email"=>"Invalid credentials"]);
+        $student = Student::where('email', $request->email)->first();
+        if (!Hash::check($request->password, $student->password)) {
+            return redirect()->route('auth.login')->withErrors(["email" => "Invalid credentials"]);
         }
-        session(["auth"=>$student]);
+        session(["auth" => $student]);
         return redirect()->route('dashboard.home');
     }
     public function logout()
     {
+        session()->forget("auth");
+        return redirect()->route("auth.login");
+    }
+    public function passwordChangeUI()
+    {
+        return view("auth.changePassword");
+    }
+    public function passwordChange(Request $request)
+    {
+        $request->validate([
+            'current_password' => "required|min:8",
+            'password' => "required|min:8|confirmed",
+
+        ]);
+        if (!Hash::check($request->current_password, session("auth")->password)) {
+            return redirect()->back()->withErrors(["current_password" => "Password is incorrect"]);
+        };
+        $student = Student::find(session("auth")->id);
+        $student->password = Hash::make($request->password);
+        $student->update();
         session()->forget("auth");
         return redirect()->route("auth.login");
     }
