@@ -20,9 +20,13 @@ class AuthController extends Controller
             'password' => "required|min:8",
             'password_confirmation' => " same:password"
         ]);
+        $verify_code=rand(100000,999999);
+        //mailing
+        logger("Your verification code is ".$verify_code);
         $student = new Student();
         $student->name = $request->name;
         $student->email = $request->email;
+        $student->verify_code=$verify_code;
         $student->password = Hash::make($request->password);
         $student->save();
 
@@ -74,5 +78,22 @@ class AuthController extends Controller
         $student->update();
         session()->forget("auth");
         return redirect()->route("auth.login");
+    }
+    public function verifyUI(){
+        return view("auth.verify");
+    }
+    public function verify(Request $request)  {
+        $request->validate([
+            "verify_code"=>"required|numeric|min:8"
+        ]);
+        if (session('auth')->verify_code!=$request->verify_code) {
+            return redirect()->back()->withErrors(["verify_code"=>"Incorrect verification code"]);
+        };
+        $student=Student::find(session("auth")->id);
+        $student->email_verified_at=now();
+        $student->update();
+        session(["auth"=>$student]);
+
+        return redirect()->route("dashboard.home");
     }
 }

@@ -39,6 +39,8 @@ Route::controller(AuthController::class)->group(function () {
         Route::post("logout", "logout")->name("auth.logout");
         Route::get("password-change", "passwordChangeUI")->name("auth.passwordChangeUi");
         Route::post("password-change", "passwordChange")->name("auth.passwordChange");
+        Route::get("verify", "verifyUI")->name("auth.verifyUI");
+        Route::post("verify", "verify")->name("auth.verify");
     });
 });
 
