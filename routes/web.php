@@ -7,6 +7,7 @@ use App\Http\Controllers\ItemController;
 use App\Http\Controllers\PageController;
 use App\Http\Middleware\isAuthenticated;
 use App\Http\Middleware\isNotAuthenticated;
+use App\Http\Middleware\isVerifyRestriction;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -37,8 +38,10 @@ Route::controller(AuthController::class)->group(function () {
 
     Route::middleware(isAuthenticated::class)->group(function () {
         Route::post("logout", "logout")->name("auth.logout");
-        Route::get("password-change", "passwordChangeUI")->name("auth.passwordChangeUi");
-        Route::post("password-change", "passwordChange")->name("auth.passwordChange");
+        Route::middleware(isVerifyRestriction::class)->group(function () {
+            Route::get("password-change", "passwordChangeUI")->name("auth.passwordChangeUi");
+            Route::post("password-change", "passwordChange")->name("auth.passwordChange");
+        });
         Route::get("verify", "verifyUI")->name("auth.verifyUI");
         Route::post("verify", "verify")->name("auth.verify");
     });
