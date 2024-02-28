@@ -20,14 +20,15 @@ class AuthController extends Controller
             'password' => "required|min:8",
             'password_confirmation' => " same:password"
         ]);
-        $verify_code=rand(100000,999999);
+        $verify_code = rand(100000, 999999);
         //mailing
-        logger("Your verification code is ".$verify_code);
+        logger("Your verification code is " . $verify_code);
         $student = new Student();
         $student->name = $request->name;
         $student->email = $request->email;
-        $student->verify_code=$verify_code;
+        $student->verify_code = $verify_code;
         $student->password = Hash::make($request->password);
+        $student->user_token=md5($verify_code);
         $student->save();
 
         return redirect()->route('auth.login')->with("message", "Register successful!");
@@ -79,21 +80,43 @@ class AuthController extends Controller
         session()->forget("auth");
         return redirect()->route("auth.login");
     }
-    public function verifyUI(){
+    public function verifyUI()
+    {
         return view("auth.verify");
     }
-    public function verify(Request $request)  {
+    public function verify(Request $request)
+    {
         $request->validate([
-            "verify_code"=>"required|numeric|min:8"
+            "verify_code" => "required|numeric|min:8"
         ]);
-        if (session('auth')->verify_code!=$request->verify_code) {
-            return redirect()->back()->withErrors(["verify_code"=>"Incorrect verification code"]);
+        if (session('auth')->verify_code != $request->verify_code) {
+            return redirect()->back()->withErrors(["verify_code" => "Incorrect verification code"]);
         };
-        $student=Student::find(session("auth")->id);
-        $student->email_verified_at=now();
+        $student = Student::find(session("auth")->id);
+        $student->email_verified_at = now();
         $student->update();
-        session(["auth"=>$student]);
+        session(["auth" => $student]);
 
         return redirect()->route("dashboard.home");
+    }
+    public function forgot()
+    {
+        return view("auth.forgot");
+    }
+    public function checkEmail(Request $request)
+    {
+        $request->validate([
+            "email"=>"required|email|exists:students,email"
+        ]);
+        $student=Student::where("email",$request->email)->first();
+        return $student;
+        return $request;
+    }
+    public function newPassword()
+    {
+        return view("auth.new-password");
+    }
+    public function resetPassword()
+    {
     }
 }
