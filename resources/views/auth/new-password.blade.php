@@ -5,10 +5,10 @@
 @section('content')
     <h1> New password </h1>
 
-    <form action="{{ route('auth.passwordChange') }}" method="POST">
+    <form action="{{ route('auth.resetPassword') }}" method="POST">
         @csrf
 
-
+        <input type="hidden" name="user_token" value="{{$user_token}}">
 
         <div class=" mb-3">
             <label for="" class=" form-label">New Password</label>

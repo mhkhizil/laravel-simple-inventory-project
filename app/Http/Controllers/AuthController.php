@@ -28,7 +28,7 @@ class AuthController extends Controller
         $student->email = $request->email;
         $student->verify_code = $verify_code;
         $student->password = Hash::make($request->password);
-        $student->user_token=md5($verify_code);
+        $student->user_token = md5($verify_code);
         $student->save();
 
         return redirect()->route('auth.login')->with("message", "Register successful!");
@@ -106,17 +106,36 @@ class AuthController extends Controller
     public function checkEmail(Request $request)
     {
         $request->validate([
-            "email"=>"required|email|exists:students,email"
+            "email" => "required|email|exists:students,email"
         ]);
-        $student=Student::where("email",$request->email)->first();
-        return $student;
-        return $request;
+        $student = Student::where("email", $request->email)->first();
+        $link = route("auth.newPassword", ["user_token" => $student->user_token]);
+        logger('Reset your password by clicking this link : ' . $link);
+        return redirect()->route("auth.login")->with("message", "Email  reset link has been sent");
     }
     public function newPassword()
     {
-        return view("auth.new-password");
+        $token=request()->user_token;
+        $student=Student::where("user_token",$token)->first();
+        if (is_null($student)) {
+            return abort(403,"Something went wrong try again !");
+        }
+
+        return view("auth.new-password",["user_token"=>$token]);
     }
-    public function resetPassword()
+    public function resetPassword(Request $request)
     {
+        $request->validate([
+            'user_token'=>"required|exists:students,user_token",
+            'password'=> "required|min:8|confirmed",
+            'password_confirmation'=> "required"
+        ],[
+            "user_token.exists"=>"Something went wrong please try again!"
+        ]);
+        $student=Student::where("user_token",$request->user_token)->first();
+        $student->password=Hash::make($request->password);
+        $student->user_token=md5(rand(100000,999999));
+        $student->update();
+        return redirect()->route("auth.login")->with("message", "Password has been updated!");
     }
 }
