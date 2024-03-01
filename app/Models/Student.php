@@ -9,6 +9,6 @@ class Student extends Model
 {
     use HasFactory;
     //to make password hidden when extracting data from db
-    protected $hidden=["password","user_token"];
-   
+    protected $hidden=["password","user_token","verify_code","api_token"];
+
 }
